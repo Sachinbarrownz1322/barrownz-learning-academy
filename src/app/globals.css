@@ -1,0 +1,196 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Official Barrownz Learning Academy Brand Identity */
+  --brand-indigo: #2E3192;
+  --brand-primary: #2E3192;
+  --brand-blue: #0071BC;
+  --brand-secondary: #0071BC;
+  --brand-blue-hover: #005a96;
+  --brand-dark: #20243A;
+
+  /* Surfaces & Backgrounds */
+  --bg-white: #FFFFFF;
+  --bg-light: #F5F8FC;
+  --bg-light-blue: #EAF4FC;
+  --surface-bg: #F5F8FC;
+
+  /* Typography */
+  --text-dark: #20243A;
+  --text-heading: #2E3192;
+  --text-body: #20243A;
+  --text-muted: #667085;
+
+  /* Borders & Interactive States */
+  --border-color: #E5EAF2;
+  --btn-primary-bg: #0071BC;
+  --btn-primary-hover: #005a96;
+}
+
+@layer components {
+  .bla-container {
+    @apply max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-12;
+  }
+
+  .bla-btn-primary {
+    @apply inline-flex items-center justify-center gap-2 bg-[#0071BC] hover:bg-[#005a96] text-white font-bold rounded-xl transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-[#0071BC]/40;
+  }
+
+  .bla-btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 bg-[#EAF4FC] hover:bg-[#dcecfb] text-[#2E3192] font-bold rounded-xl border border-[#E5EAF2] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#0071BC]/30;
+  }
+
+  .bla-card {
+    @apply bg-white rounded-2xl border border-[#E5EAF2] shadow-sm hover:shadow-lg hover:border-[#0071BC]/60 transition-all duration-300;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+@media (min-width: 1024px) {
+  html {
+    font-size: 16.5px;
+  }
+}
+
+@media (min-width: 1280px) {
+  html {
+    font-size: 17px;
+  }
+}
+
+body {
+  color: #20243A;
+  background-color: #FFFFFF;
+  font-family: var(--font-ibm-plex-serif), "IBM Plex Serif", serif;
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-display {
+  font-family: var(--font-ibm-plex-serif), "IBM Plex Serif", serif;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Reference Marquee Container & Content */
+.marquee-container {
+  width: 100%;
+  white-space: nowrap;
+  background-color: #2E3192;
+  overflow: hidden;
+  color: #fff;
+}
+.marquee-content {
+  display: flex;
+  width: max-content;
+  align-items: center;
+  will-change: transform;
+  animation: marquee 32s linear infinite;
+}
+.marquee-container:hover .marquee-content {
+  animation-play-state: paused;
+}
+
+/* Infinite Marquee */
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes marquee-reverse {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0%); }
+}
+
+.animate-marquee-smooth {
+  display: flex;
+  width: max-content;
+  animation: marquee 35s linear infinite;
+}
+
+.animate-marquee-rtl {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: marquee 38s linear infinite;
+}
+
+.animate-marquee-ltr {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: marquee-reverse 38s linear infinite;
+}
+
+.animate-marquee-smooth:hover,
+.animate-marquee-rtl:hover,
+.animate-marquee-ltr:hover {
+  animation-play-state: paused;
+}
+
+/* Glassmorphism Classes */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.glass-dark {
+  background: rgba(11, 19, 41, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Gradient text utility */
+.gradient-text-brand {
+  background: linear-gradient(135deg, #2563eb 0%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-accent {
+  background: linear-gradient(135deg, #ea580c 0%, #facc15 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Subtle modern card styling */
+.interactive-card {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.interactive-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 30px -10px rgba(37, 99, 235, 0.12);
+}
+
+/* Form focus ring */
+.custom-input {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.custom-input:focus {
+  outline: none;
+  border-color: #0071BC;
+  box-shadow: 0 0 0 3px rgba(0, 113, 188, 0.15);
+}
