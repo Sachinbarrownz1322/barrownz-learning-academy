@@ -1,20 +1,41 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight, Maximize2, Monitor, Users, Cpu, Sparkles, MapPin } from "lucide-react";
 import { campusGalleryItems } from "@/data/galleryData";
+import { fetchPublicCms } from "@/lib/cms";
 import GallerySubNav from "@/components/GallerySubNav";
 import GalleryLightbox from "@/components/GalleryLightbox";
 
 export default function GalleryPage() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [selectedIndex, setSelectedIndex] = useState(null);
+  const [galleryItems, setGalleryItems] = useState(campusGalleryItems);
+  const [categories, setCategories] = useState(["All", "Classroom Labs", "Workshops", "Seminars", "Certification"]);
 
-  const categories = ["All", "Classroom Labs", "Workshops", "Seminars", "Certification"];
+  useEffect(() => {
+    fetchPublicCms("/gallery?section=CAMPUS_LABS").then((cms) => {
+      if (!cms) return;
+      if (cms.items?.length > 0) {
+        setGalleryItems(
+          cms.items.map((item) => ({
+            src: item.imageUrl,
+            title: item.title,
+            category: item.categoryName || "Classroom Labs",
+            location: item.location || "Gomti Nagar Campus, Lucknow",
+            desc: item.description || item.caption || "",
+          }))
+        );
+      }
+      if (cms.categories?.length > 0) {
+        setCategories(["All", ...cms.categories.map((c) => c.name)]);
+      }
+    });
+  }, []);
 
-  const filteredItems = campusGalleryItems.filter(
+  const filteredItems = galleryItems.filter(
     (item) => activeCategory === "All" || item.category === activeCategory
   );
 

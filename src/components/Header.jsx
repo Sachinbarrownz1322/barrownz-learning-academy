@@ -225,15 +225,7 @@ export default function Header() {
               className="inline-flex items-center gap-1.5 bg-[#0071BC] hover:bg-[#005a96] text-white px-2.5 py-1 rounded-md text-[11px] sm:text-xs font-bold tracking-wide transition shadow-sm hover:shadow hover:-translate-y-0.5 whitespace-nowrap"
             >
               <User className="w-3.5 h-3.5" />
-              <span>Student Portal</span>
-            </Link>
-
-            <Link
-              href="/RegisterForEnrollment"
-              className="inline-flex items-center gap-1.5 bg-[#2E3192] hover:bg-[#232675] text-white px-2.5 py-1 rounded-md text-[11px] sm:text-xs font-bold tracking-wide transition shadow-sm hover:shadow hover:-translate-y-0.5 whitespace-nowrap"
-            >
-              <GraduationCap className="w-3.5 h-3.5 text-amber-300" />
-              <span>Register For Training</span>
+              <span>Verify Student</span>
             </Link>
 
             <Link
@@ -679,28 +671,26 @@ export default function Header() {
                 {/* Desktop Action CTAs - whitespace-nowrap and flex-shrink-0 so they never wrap onto two lines */}
             <div className="hidden xl:flex items-center gap-2 flex-shrink-0 whitespace-nowrap">
                 <Link
-                  href="/RegisterForEnrollment"
+                  href="/login?mode=student"
                   className="bg-[#0071BC] hover:bg-[#005a96] text-white px-3.5 xl:px-4 py-2 rounded-lg font-bold text-[13px] 2xl:text-[14px] tracking-wide transition shadow-sm hover:shadow hover:-translate-y-0.5 duration-200 flex items-center whitespace-nowrap flex-shrink-0"
                 >
-                  <span className="whitespace-nowrap flex-shrink-0">Register for training</span>
+                  <span className="whitespace-nowrap flex-shrink-0">Student Login</span>
                 </Link>
-                <a
-                  href="https://rzp.io/rzp/Barrownz"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="bg-[#2E3192] hover:bg-[#0071BC] text-white px-3 xl:px-3.5 py-2 rounded-lg font-bold text-[13px] 2xl:text-[14px] tracking-wide transition shadow-sm hover:shadow hover:-translate-y-0.5 duration-200 flex items-center whitespace-nowrap flex-shrink-0"
+                <Link
+                  href="/login?mode=portal"
+                  className="bg-[#2E3192] hover:bg-[#0071BC] text-white px-3.5 xl:px-4 py-2 rounded-lg font-bold text-[13px] 2xl:text-[14px] tracking-wide transition shadow-sm hover:shadow hover:-translate-y-0.5 duration-200 flex items-center whitespace-nowrap flex-shrink-0"
                 >
-                  <span className="whitespace-nowrap flex-shrink-0">PayUs</span>
-                </a>
+                  <span className="whitespace-nowrap flex-shrink-0">BLA Login</span>
+                </Link>
               </div>
 
             {/* Mobile & Tablet Hamburger Toggle */}
             <div className="flex xl:hidden items-center gap-2 flex-shrink-0">
               <Link
-                href="/RegisterForEnrollment"
-                className="text-xs font-bold bg-[#2E3192] hover:bg-[#005a96] text-white px-3 py-1.5 rounded-lg whitespace-nowrap flex-shrink-0 shadow-sm"
+                href="/login?mode=student"
+                className="text-xs font-bold bg-[#0071BC] hover:bg-[#005a96] text-white px-3 py-1.5 rounded-lg whitespace-nowrap flex-shrink-0 shadow-sm"
               >
-                Register
+                Student Login
               </Link>
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -903,20 +893,19 @@ export default function Header() {
 
             <div className="pt-4 flex flex-col gap-2.5">
               <Link
-                href="/RegisterForEnrollment"
+                href="/login?mode=student"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full text-center bg-[#0071BC] text-white py-3 rounded-xl font-bold text-xs shadow-md"
+              >
+                Student Login
+              </Link>
+              <Link
+                href="/login?mode=portal"
                 onClick={() => setMobileMenuOpen(false)}
                 className="w-full text-center bg-[#2E3192] text-white py-3 rounded-xl font-bold text-xs shadow-md"
               >
-                Register for Training
+                BLA Login
               </Link>
-              <a
-                href="https://rzp.io/rzp/Barrownz"
-                target="_blank"
-                rel="noreferrer"
-                className="w-full text-center bg-[#0071BC] text-white py-3 rounded-xl font-bold text-xs shadow-md"
-              >
-                Online Fee Payment (PayUs)
-              </a>
             </div>
           </div>
         )}

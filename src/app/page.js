@@ -25,6 +25,7 @@ import {
   Mail,
   Send
 } from "lucide-react";
+import { fetchPublicCms } from "@/lib/cms";
 
 /* ─── HERO SLIDES DATA ─── */
 const slides = [
@@ -185,25 +186,26 @@ const faqData = [
 /* ═══════════════════════════════════════════════════
    FULL-SCREEN HERO SLIDER (Top Banner)
 ═══════════════════════════════════════════════════ */
-function FullScreenHeroSlider() {
+function FullScreenHeroSlider({ slidesData = slides }) {
   const [current, setCurrent] = useState(0);
   const timerRef = useRef(null);
 
   const startTimer = () => {
     if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % slides.length);
+      setCurrent((prev) => (prev + 1) % slidesData.length);
     }, 4500);
   };
 
   useEffect(() => {
+    setCurrent(0);
     startTimer();
     return () => clearInterval(timerRef.current);
-  }, []);
+  }, [slidesData.length]);
 
   const go = (dir) => {
     clearInterval(timerRef.current);
-    setCurrent((prev) => (prev + dir + slides.length) % slides.length);
+    setCurrent((prev) => (prev + dir + slidesData.length) % slidesData.length);
     startTimer();
   };
 
@@ -213,7 +215,7 @@ function FullScreenHeroSlider() {
         className="flex transition-transform duration-700 ease-in-out"
         style={{ transform: `translateX(-${current * 100}%)` }}
       >
-        {slides.map((slide, i) => (
+        {slidesData.map((slide, i) => (
           <div
             key={i}
             className="min-w-full relative h-[340px] sm:h-[420px] md:h-[480px] lg:h-[540px] xl:h-[600px]"
@@ -410,6 +412,49 @@ export default function HomePage() {
   const [activeFaq, setActiveFaq] = useState(0);
   const [enquirySent, setEnquirySent] = useState(false);
   const [quickForm, setQuickForm] = useState({ name: "", phone: "", course: "MERN Full Stack Development" });
+  const [heroSlides, setHeroSlides] = useState(slides);
+  const [batchCards, setBatchCards] = useState(upcomingBatches);
+  const [placementCards, setPlacementCards] = useState(recentPlacements);
+
+  useEffect(() => {
+    fetchPublicCms("/bootstrap").then((cms) => {
+      if (!cms) return;
+      if (cms.heroSlides?.length > 0) {
+        setHeroSlides(
+          cms.heroSlides.map((s) => ({
+            src: s.desktopImageUrl,
+            alt: s.altText || s.title,
+            title: s.title,
+            subtitle: s.subtitle || s.description || "",
+          }))
+        );
+      }
+      if (cms.promoCards?.length > 0) {
+        setBatchCards(
+          cms.promoCards.map((c, idx) => ({
+            course: c.title,
+            image: c.imageUrl,
+            date: c.duration || "Admissions Open",
+            mode: c.mode || "Classroom / Hybrid",
+            seats: c.seatsLabel || "Limited Seats",
+            badge: c.badge || "Featured",
+            color: "border-[#E2E8F0]",
+            badgeBg: idx % 2 === 0 ? "bg-[#2E3192] text-white" : "bg-[#0071BC] text-white",
+          }))
+        );
+      }
+      if (cms.placements?.length > 0) {
+        setPlacementCards(
+          cms.placements.slice(0, 6).map((p) => ({
+            name: p.studentName,
+            role: p.designation,
+            company: p.companyName,
+            image: p.studentPhotoUrl || "/images/placements/ayush-srivastava.jpg",
+          }))
+        );
+      }
+    });
+  }, []);
 
   const handleQuickSubmit = (e) => {
     e.preventDefault();
@@ -421,7 +466,7 @@ export default function HomePage() {
 
       {/* ─── 0. FULL-SCREEN HERO SLIDER ─── */}
       <section aria-label="Full screen hero slider">
-        <FullScreenHeroSlider />
+        <FullScreenHeroSlider slidesData={heroSlides} />
       </section>
 
       {/* ─── 1. LEARNHUB-INSPIRED SPLIT EDITORIAL HERO ─── */}
@@ -618,12 +663,19 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <div className="overflow-hidden py-3">
-            <div className="animate-marquee-ltr flex gap-5">
-              {[...upcomingBatches, ...upcomingBatches].map((b, i) => (
+          <div className="overflow-hidden py-4 px-1">
+            <div className="animate-marquee-ltr flex gap-6">
+              {[...batchCards, ...batchCards].map((b, i) => {
+                const cardTints = [
+                  "bg-[#E0F2FE] hover:bg-[#BAE6FD]/80",
+                  "bg-[#E0E7FF] hover:bg-[#C7D2FE]/80",
+                  "bg-[#DCFCE7] hover:bg-[#BBF7D0]/80",
+                  "bg-[#FEF3C7] hover:bg-[#FDE68A]/80",
+                ];
+                return (
                 <div
                   key={i}
-                  className={`w-[280px] sm:w-[310px] lg:w-[330px] shrink-0 bg-white rounded-2xl border ${b.color} overflow-hidden shadow-sm hover:shadow-xl hover:border-[#0071BC] transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1`}
+                  className={`w-[280px] sm:w-[310px] lg:w-[330px] shrink-0 ${cardTints[i % cardTints.length]} rounded-2xl border-0 overflow-hidden shadow-[0_6px_20px_rgba(46,49,146,0.08)] hover:shadow-[0_14px_32px_rgba(0,113,188,0.20)] transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1.5`}
                 >
                   <div>
                     <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#F4F7FC] rounded-t-2xl">
@@ -675,7 +727,8 @@ export default function HomePage() {
                     </Link>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
@@ -771,7 +824,7 @@ export default function HomePage() {
 
           <div className="overflow-hidden py-3">
             <div className="animate-marquee-rtl flex gap-5 sm:gap-6">
-              {[...recentPlacements.slice(0, 6), ...recentPlacements.slice(0, 6)].map((st, i) => (
+              {[...placementCards.slice(0, 6), ...placementCards.slice(0, 6)].map((st, i) => (
                 <div
                   key={i}
                   className="w-[280px] sm:w-[310px] lg:w-[330px] shrink-0 bg-white rounded-2xl border border-[#E2E8F0] overflow-hidden shadow-sm hover:shadow-xl hover:border-[#0071BC] transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1"

@@ -1,14 +1,24 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Phone, Mail, MapPin, ArrowRight, ShieldCheck, Award, CheckCircle2 } from "lucide-react";
 import { websiteData } from "@/data/siteData";
+import { fetchPublicCms } from "@/lib/cms";
 
 export default function Footer() {
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [newsletterNotice, setNewsletterNotice] = useState(false);
+  const [cmsSettings, setCmsSettings] = useState(null);
+
+  useEffect(() => {
+    fetchPublicCms("/bootstrap").then((cms) => {
+      if (cms?.settings) setCmsSettings(cms.settings);
+    });
+  }, []);
+
+  const copyrightText = cmsSettings?.copyrightText || "© 2026 All Rights Reserved - Barrownz Group";
 
   const handleNewsletterSubmit = (e) => {
     e.preventDefault();
@@ -267,7 +277,7 @@ export default function Footer() {
 
         {/* Bottom Rights Bar */}
         <div className="pt-6 flex flex-col md:flex-row items-center justify-between text-sm text-slate-400 gap-3">
-          <p>© 2026 All Rights Reserved - <a href="https://barrownz.com/" target="_blank" rel="noreferrer" className="text-slate-300 hover:text-white underline">Barrownz Group</a></p>
+          <p>{copyrightText}</p>
           <div className="flex items-center gap-4 text-xs sm:text-sm">
             <Link href="/privacy-policy" className="hover:text-white transition">Privacy Policy</Link>
             <span>•</span>

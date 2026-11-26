@@ -1,19 +1,46 @@
 "use client";
 
-import React, { useState } from "react";
-import { ShieldCheck, Search, Info } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { ShieldCheck, Search, CheckCircle2, AlertCircle, XCircle } from "lucide-react";
 import AcademyPortalLayout from "@/components/AcademyPortalLayout";
+import { apiRequest } from "@/lib/api";
 
 export default function VerifyCertificatePage() {
   const [certId, setCertId] = useState("");
   const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const performVerify = async (serial) => {
+    const clean = String(serial || "").trim().toUpperCase();
+    if (!clean) return;
+    setLoading(true);
+    setError("");
+    setResult(null);
+    try {
+      const res = await apiRequest(`/public/verify-certificate/${encodeURIComponent(clean)}`);
+      setResult(res);
+    } catch (err) {
+      setError(err.message || "Certificate record not found");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+      if (id) {
+        setCertId(id.toUpperCase());
+        performVerify(id);
+      }
+    }
+  }, []);
 
   const handleVerify = (e) => {
     e.preventDefault();
-    if (!certId.trim()) return;
-    setResult({
-      id: certId.trim().toUpperCase(),
-    });
+    performVerify(certId);
   };
 
   return (
@@ -44,33 +71,90 @@ export default function VerifyCertificatePage() {
               required
               value={certId}
               onChange={(e) => setCertId(e.target.value)}
-              placeholder="e.g. BLA-2026-8841"
+              placeholder="e.g. BLA-CERT-2026-00001"
               className="w-full text-xs sm:text-sm px-4 py-3 rounded-xl border border-[#E2E8F0] focus:outline-none focus:border-[#0071BC] bg-[#F4F7FC] font-mono uppercase text-[#20243A]"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full sm:w-auto bg-[#0071BC] hover:bg-[#005a96] text-white text-xs sm:text-sm font-bold px-6 py-3 rounded-xl transition flex items-center justify-center gap-2 shadow-sm"
+            disabled={loading}
+            className="w-full sm:w-auto bg-[#0071BC] hover:bg-[#005a96] disabled:opacity-60 text-white text-xs sm:text-sm font-bold px-6 py-3 rounded-xl transition flex items-center justify-center gap-2 shadow-sm"
           >
             <Search className="w-4 h-4" />
-            <span>Check Certificate ID</span>
+            <span>{loading ? "Verifying..." : "Check Certificate ID"}</span>
           </button>
         </form>
 
-        {result && (
-          <div className="mt-6 p-5 rounded-xl bg-[#EEF6FC] border border-[#E2E8F0] space-y-2.5 text-xs">
-            <div className="flex items-center gap-2 text-[#2E3192] font-extrabold">
-              <Info className="w-4 h-4 text-[#0071BC] shrink-0" />
-              <span>Frontend Preview Only (Live Ledger Lookup Pending)</span>
+        {error && (
+          <div className="mt-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
+
+        {result?.certificate && (
+          <div
+            className={`mt-6 p-5 rounded-xl border space-y-3 text-xs ${
+              result.verified
+                ? "bg-[#EEF6FC] border-[#0071BC]/30"
+                : "bg-red-50 border-red-200"
+            }`}
+          >
+            <div className="flex items-center gap-2 font-extrabold">
+              {result.verified ? (
+                <>
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                  <span className="text-[#2E3192]">Verified Authentic BLA Certificate</span>
+                </>
+              ) : (
+                <>
+                  <XCircle className="w-5 h-5 text-red-600 shrink-0" />
+                  <span className="text-red-700">Certificate Revoked</span>
+                </>
+              )}
             </div>
-            <div className="text-[#20243A] space-y-1.5 pt-2 border-t border-[#E2E8F0]">
-              <div><strong>Entered ID:</strong> <span className="font-mono">{result.id}</span></div>
-              <div className="text-[#64748B]">
-                Live database verification is not connected in this static frontend yet. For official verification, contact{" "}
-                <a href="tel:+919076760009" className="font-bold text-[#0071BC] underline">+91 9076760009</a>.
+            <div className="grid sm:grid-cols-2 gap-2.5 text-[#20243A] pt-2 border-t border-[#E2E8F0]">
+              <div>
+                <span className="text-[#64748B] block text-[10px]">Certificate ID</span>
+                <span className="font-mono font-bold text-[#0071BC]">{result.certificate.certificateId}</span>
+              </div>
+              <div>
+                <span className="text-[#64748B] block text-[10px]">Student Name</span>
+                <span className="font-bold">{result.certificate.studentName}</span>
+              </div>
+              {result.certificate.otrNumber && (
+                <div>
+                  <span className="text-[#64748B] block text-[10px]">OTR Number</span>
+                  <span className="font-mono font-semibold">{result.certificate.otrNumber}</span>
+                </div>
+              )}
+              <div>
+                <span className="text-[#64748B] block text-[10px]">Program / Course</span>
+                <span className="font-bold">{result.certificate.courseTitle}</span>
+              </div>
+              <div>
+                <span className="text-[#64748B] block text-[10px]">Type & Grade</span>
+                <span className="font-semibold">
+                  {result.certificate.certificateType} • Grade: {result.certificate.gradeOrScore}
+                </span>
+              </div>
+              <div>
+                <span className="text-[#64748B] block text-[10px]">Issue Date</span>
+                <span className="font-semibold">
+                  {new Date(result.certificate.issueDate).toLocaleDateString("en-IN", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </span>
               </div>
             </div>
+            {result.certificate.isRevoked && result.certificate.revocationReason && (
+              <p className="text-red-700 font-medium pt-1">
+                Reason: {result.certificate.revocationReason}
+              </p>
+            )}
           </div>
         )}
       </div>
