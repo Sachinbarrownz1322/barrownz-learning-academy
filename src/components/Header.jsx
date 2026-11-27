@@ -330,8 +330,8 @@ export default function Header() {
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center gap-2 xl:gap-4 h-16 sm:h-20">
             {/* Brand Logo in Landscape Format */}
-            <Link href="/" className="flex items-center flex-shrink-0 group">
-              <div className="relative h-11 sm:h-12 lg:h-14 w-36 sm:w-44 xl:w-48 2xl:w-52 transition-transform duration-200 group-hover:scale-[1.02]">
+            <Link href="/" className="flex items-center flex-shrink-0">
+              <div className="relative h-11 sm:h-12 lg:h-14 w-36 sm:w-44 xl:w-48 2xl:w-52">
                 <Image
                   src="/images/logo/logo.png"
                   alt="Barrownz Learning Academy"

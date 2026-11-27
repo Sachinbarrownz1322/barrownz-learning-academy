@@ -76,8 +76,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10 pb-12 border-b border-slate-800">
           {/* Column 1: Brand & Logo */}
           <div className="lg:col-span-4 space-y-4">
-            <Link href="/" className="flex items-center flex-shrink-0 group">
-              <div className="relative h-16 sm:h-20 w-56 sm:w-72 transition-transform duration-200 group-hover:scale-[1.02]">
+            <Link href="/" className="flex items-center flex-shrink-0">
+              <div className="relative h-16 sm:h-20 w-56 sm:w-72">
                 <Image
                   src="/images/logo/logo-footer.png"
                   alt="Barrownz Learning Academy"
