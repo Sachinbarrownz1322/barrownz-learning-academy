@@ -3,6 +3,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "framer-motion";
+import { fadeUp, VIEWPORT_CONFIG } from "@/components/motion/variants";
 import {
   ChevronLeft,
   ChevronRight,
@@ -577,73 +579,14 @@ export default function HomePage() {
       </section>
 
       {/* ─── 1C. QUICK ADMISSION CONSULTATION STRIP ─── */}
-      <section className="py-6 bg-[#EEF6FC] border-b border-[#E2E8F0]">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-          {enquirySent ? (
-            <div className="bg-white border border-[#E2E8F0] text-[#20243A] p-4 rounded-xl text-center text-xs sm:text-sm font-semibold flex flex-col sm:flex-row items-center justify-center gap-2 shadow-sm">
-              <CheckCircle2 className="w-5 h-5 text-[#0071BC] shrink-0" />
-              <span>
-                Frontend preview only (no backend connected yet). For immediate callback, please call{" "}
-                <a href="tel:+919076760009" className="underline font-bold text-[#0071BC]">+91 9076760009</a>.
-              </span>
-            </div>
-          ) : (
-            <form onSubmit={handleQuickSubmit} className="flex flex-col lg:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-3 shrink-0 text-center lg:text-left">
-                <div className="w-10 h-10 rounded-xl bg-[#2E3192] text-white flex items-center justify-center shrink-0 hidden sm:flex">
-                  <Sparkles className="w-4 h-4" />
-                </div>
-                <div>
-                  <h4 className="text-sm font-extrabold text-[#2E3192]">Request Quick Admissions Call Back</h4>
-                  <p className="text-xs text-[#64748B]">Free 1-on-1 career counselling with software mentors</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 w-full lg:w-auto flex-1 max-w-2xl">
-                <input
-                  type="text"
-                  required
-                  placeholder="Your Full Name"
-                  value={quickForm.name}
-                  onChange={(e) => setQuickForm({ ...quickForm, name: e.target.value })}
-                  className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-[#E2E8F0] focus:outline-none focus:border-[#0071BC] bg-white text-[#20243A]"
-                />
-                <input
-                  type="tel"
-                  required
-                  placeholder="Mobile (+91)"
-                  value={quickForm.phone}
-                  onChange={(e) => setQuickForm({ ...quickForm, phone: e.target.value })}
-                  className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-[#E2E8F0] focus:outline-none focus:border-[#0071BC] bg-white text-[#20243A]"
-                />
-                <select
-                  value={quickForm.course}
-                  onChange={(e) => setQuickForm({ ...quickForm, course: e.target.value })}
-                  className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-[#E2E8F0] focus:outline-none focus:border-[#0071BC] bg-white text-[#20243A]"
-                >
-                  <option value="MERN Full Stack Development">MERN Full Stack</option>
-                  <option value="Python AI & ML Track">Python AI &amp; ML</option>
-                  <option value="Summer Training 2026">Summer Training 2026</option>
-                  <option value="Java Full Stack Development">Java Full Stack</option>
-                  <option value="Data Analytics & Power BI">Data Analytics</option>
-                  <option value="ASP.NET Core & C#">ASP.NET Core</option>
-                </select>
-              </div>
-
-              <button
-                type="submit"
-                className="w-full sm:w-auto bg-[#0071BC] hover:bg-[#005a96] text-white text-xs font-bold px-6 py-2.5 rounded-xl transition whitespace-nowrap shadow-sm shrink-0 flex items-center justify-center gap-1.5"
-              >
-                <span>Request Call Back</span>
-                <Send className="w-3.5 h-3.5 shrink-0" />
-              </button>
-            </form>
-          )}
-        </div>
-      </section>
-
       {/* ─── 2. UPCOMING & ONGOING TRAINING BATCHES ─── */}
-      <section className="py-14 sm:py-18 bg-white border-b border-[#E2E8F0]">
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={VIEWPORT_CONFIG}
+        variants={fadeUp}
+        className="py-14 sm:py-18 bg-white border-b border-[#E2E8F0]"
+      >
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-10 gap-4">
             <div>
@@ -675,7 +618,7 @@ export default function HomePage() {
                 return (
                 <div
                   key={i}
-                  className={`w-[280px] sm:w-[310px] lg:w-[330px] shrink-0 ${cardTints[i % cardTints.length]} rounded-2xl border-0 overflow-hidden shadow-[0_6px_20px_rgba(46,49,146,0.08)] hover:shadow-[0_14px_32px_rgba(0,113,188,0.20)] transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1.5`}
+                  className={`w-[240px] sm:w-[255px] lg:w-[265px] xl:w-[275px] shrink-0 ${cardTints[i % cardTints.length]} rounded-2xl border-0 overflow-hidden shadow-[0_6px_20px_rgba(46,49,146,0.08)] hover:shadow-[0_14px_32px_rgba(0,113,188,0.20)] transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1.5`}
                 >
                   <div>
                     <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#F4F7FC] rounded-t-2xl">
@@ -684,7 +627,7 @@ export default function HomePage() {
                         alt={b.course}
                         fill
                         className="object-cover transition-transform duration-300 group-hover:scale-105"
-                        sizes="(max-width: 640px) 280px, (max-width: 1024px) 310px, 330px"
+                        sizes="(max-width: 640px) 240px, (max-width: 1024px) 255px, 275px"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#20243A]/60 via-transparent to-black/15" />
 
@@ -732,7 +675,7 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* ─── 3. ABOUT BLA (Editorial Asymmetric Split) ─── */}
       <section className="py-14 sm:py-20 bg-[#F4F7FC] border-b border-[#E2E8F0]">
@@ -827,7 +770,7 @@ export default function HomePage() {
               {[...placementCards.slice(0, 6), ...placementCards.slice(0, 6)].map((st, i) => (
                 <div
                   key={i}
-                  className="w-[280px] sm:w-[310px] lg:w-[330px] shrink-0 bg-white rounded-2xl border border-[#E2E8F0] overflow-hidden shadow-sm hover:shadow-xl hover:border-[#0071BC] transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1"
+                  className="w-[240px] sm:w-[255px] lg:w-[265px] xl:w-[275px] shrink-0 bg-white rounded-2xl border border-[#E2E8F0] overflow-hidden shadow-sm hover:shadow-xl hover:border-[#0071BC] transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1"
                 >
                   <div>
                     <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#F4F7FC] rounded-t-2xl">
@@ -836,7 +779,7 @@ export default function HomePage() {
                         alt={st.name}
                         fill
                         className="object-cover object-top transition-transform duration-300 group-hover:scale-105"
-                        sizes="(max-width: 640px) 280px, (max-width: 1024px) 310px, 330px"
+                        sizes="(max-width: 640px) 240px, (max-width: 1024px) 255px, 275px"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#20243A]/75 via-transparent to-transparent" />
                       <span className="absolute top-3 left-3 text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-md shadow-sm bg-[#2E3192] text-white">
@@ -933,7 +876,7 @@ export default function HomePage() {
                     {[...domain.items, ...domain.items].map((tech, tIdx) => (
                       <div
                         key={tIdx}
-                        className="w-[280px] sm:w-[310px] lg:w-[330px] shrink-0 bg-white rounded-2xl border border-[#E2E8F0] overflow-hidden shadow-sm hover:border-[#0071BC] hover:shadow-xl transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1"
+                        className="w-[240px] sm:w-[255px] lg:w-[265px] xl:w-[275px] shrink-0 bg-white rounded-2xl border border-[#E2E8F0] overflow-hidden shadow-sm hover:border-[#0071BC] hover:shadow-xl transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1"
                       >
                         <div>
                           <div className="relative aspect-[16/9] w-full overflow-hidden bg-[#20243A] rounded-t-2xl">
@@ -942,7 +885,7 @@ export default function HomePage() {
                               alt={tech.name}
                               fill
                               className="object-cover transition-transform duration-300 group-hover:scale-105"
-                              sizes="(max-width: 640px) 280px, (max-width: 1024px) 310px, 330px"
+                              sizes="(max-width: 640px) 240px, (max-width: 1024px) 255px, 275px"
                             />
                             <span className="absolute top-2.5 right-2.5 text-[10px] font-bold px-2.5 py-0.5 rounded bg-white/95 text-[#2E3192] shadow-sm">
                               {tech.level}
@@ -977,8 +920,80 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ─── QUICK ADMISSIONS CALL BACK ─── */}
+      <section className="py-6 bg-[#EEF6FC] border-b border-[#E2E8F0]">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+          {enquirySent ? (
+            <div className="bg-white border border-[#E2E8F0] text-[#20243A] p-4 rounded-xl text-center text-xs sm:text-sm font-semibold flex flex-col sm:flex-row items-center justify-center gap-2 shadow-sm">
+              <CheckCircle2 className="w-5 h-5 text-[#0071BC] shrink-0" />
+              <span>
+                Frontend preview only (no backend connected yet). For immediate callback, please call{" "}
+                <a href="tel:+919076760009" className="underline font-bold text-[#0071BC]">+91 9076760009</a>.
+              </span>
+            </div>
+          ) : (
+            <form onSubmit={handleQuickSubmit} className="flex flex-col lg:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-3 shrink-0 text-center lg:text-left">
+                <div className="w-10 h-10 rounded-xl bg-[#2E3192] text-white flex items-center justify-center shrink-0 hidden sm:flex">
+                  <Sparkles className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-extrabold text-[#2E3192]">Request Quick Admissions Call Back</h4>
+                  <p className="text-xs text-[#64748B]">Free 1-on-1 career counselling with software mentors</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 w-full lg:w-auto flex-1 max-w-2xl">
+                <input
+                  type="text"
+                  required
+                  placeholder="Your Full Name"
+                  value={quickForm.name}
+                  onChange={(e) => setQuickForm({ ...quickForm, name: e.target.value })}
+                  className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-[#E2E8F0] focus:outline-none focus:border-[#0071BC] bg-white text-[#20243A]"
+                />
+                <input
+                  type="tel"
+                  required
+                  placeholder="Mobile (+91)"
+                  value={quickForm.phone}
+                  onChange={(e) => setQuickForm({ ...quickForm, phone: e.target.value })}
+                  className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-[#E2E8F0] focus:outline-none focus:border-[#0071BC] bg-white text-[#20243A]"
+                />
+                <select
+                  value={quickForm.course}
+                  onChange={(e) => setQuickForm({ ...quickForm, course: e.target.value })}
+                  className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-[#E2E8F0] focus:outline-none focus:border-[#0071BC] bg-white text-[#20243A]"
+                >
+                  <option value="MERN Full Stack Development">MERN Full Stack</option>
+                  <option value="Python AI & ML Track">Python AI &amp; ML</option>
+                  <option value="Summer Training 2026">Summer Training 2026</option>
+                  <option value="Java Full Stack Development">Java Full Stack</option>
+                  <option value="Data Analytics & Power BI">Data Analytics</option>
+                  <option value="ASP.NET Core & C#">ASP.NET Core</option>
+                </select>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full sm:w-auto bg-[#0071BC] hover:bg-[#005a96] text-white text-xs font-bold px-6 py-2.5 rounded-xl transition whitespace-nowrap shadow-sm shrink-0 flex items-center justify-center gap-1.5"
+              >
+                <span>Request Call Back</span>
+                <Send className="w-3.5 h-3.5 shrink-0" />
+              </button>
+            </form>
+          )}
+        </div>
+      </section>
+
       {/* ─── 7. OUR TRAINING PROGRAMS ─── */}
-      <section className="py-16 sm:py-20 bg-white border-b border-[#E2E8F0]">
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={VIEWPORT_CONFIG}
+        variants={fadeUp}
+        className="py-16 sm:py-20 bg-white border-b border-[#E2E8F0]"
+      >
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
             <span className="text-[#0071BC] font-bold text-xs uppercase tracking-widest bg-[#EEF6FC] px-3 py-1 rounded-full border border-[#E2E8F0]">
@@ -1000,7 +1015,7 @@ export default function HomePage() {
                 return (
                   <div
                     key={i}
-                    className="w-[280px] sm:w-[310px] lg:w-[330px] shrink-0 bg-white rounded-2xl border border-[#E2E8F0] overflow-hidden hover:border-[#0071BC] hover:shadow-xl transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1"
+                    className="w-[240px] sm:w-[255px] lg:w-[265px] xl:w-[275px] shrink-0 bg-white rounded-2xl border border-[#E2E8F0] overflow-hidden hover:border-[#0071BC] hover:shadow-xl transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1"
                   >
                     <div>
                       <div className="relative aspect-[16/9] w-full overflow-hidden bg-[#20243A] rounded-t-2xl">
@@ -1009,7 +1024,7 @@ export default function HomePage() {
                           alt={prog.title}
                           fill
                           className="object-cover transition-transform duration-300 group-hover:scale-105"
-                          sizes="(max-width: 640px) 280px, (max-width: 1024px) 310px, 330px"
+                          sizes="(max-width: 640px) 240px, (max-width: 1024px) 255px, 275px"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-[#20243A]/60 via-transparent to-transparent" />
 
@@ -1047,7 +1062,7 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* ─── 8. OUR CAMPUS / LUCKNOW HEAD OFFICE ─── */}
       <section className="py-14 sm:py-18 bg-[#F4F7FC] border-b border-[#E2E8F0]">
@@ -1099,7 +1114,13 @@ export default function HomePage() {
       </section>
 
       {/* ─── 9. GENERAL FAQ SECTION (Split Editorial Layout) ─── */}
-      <section className="py-14 sm:py-18 bg-white">
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={VIEWPORT_CONFIG}
+        variants={fadeUp}
+        className="py-14 sm:py-18 bg-white"
+      >
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
             <div className="lg:col-span-5 space-y-4">
@@ -1121,29 +1142,40 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="lg:col-span-7 space-y-3">
-              {faqData.map((f, idx) => (
-                <div key={idx} className="bg-white rounded-xl border border-[#E2E8F0] overflow-hidden shadow-sm">
-                  <button
-                    onClick={() => setActiveFaq(activeFaq === idx ? -1 : idx)}
-                    className={`w-full text-left p-4 sm:p-5 text-xs sm:text-sm font-bold flex justify-between items-center transition ${
-                      activeFaq === idx ? "bg-[#2E3192] text-white" : "text-[#20243A] hover:bg-[#F4F7FC]"
-                    }`}
-                  >
-                    <span className="pr-3">{f.q}</span>
-                    {activeFaq === idx ? <ChevronUp className="w-4 h-4 shrink-0" /> : <ChevronDown className="w-4 h-4 shrink-0 text-[#0071BC]" />}
-                  </button>
-                  {activeFaq === idx && (
-                    <div className="p-4 sm:p-5 text-xs sm:text-sm text-[#64748B] leading-relaxed border-t border-[#E2E8F0] bg-[#F4F7FC]">
-                      {f.a}
+            <div className="lg:col-span-7 space-y-3 lg:min-h-[430px]">
+              {faqData.map((f, idx) => {
+                const isOpen = activeFaq === idx;
+                return (
+                  <div key={idx} className="bg-white rounded-xl border border-[#E2E8F0] overflow-hidden shadow-sm">
+                    <button
+                      type="button"
+                      onClick={() => setActiveFaq(isOpen ? -1 : idx)}
+                      aria-expanded={isOpen}
+                      className={`w-full text-left p-4 sm:p-5 text-xs sm:text-sm font-bold flex justify-between items-center transition-colors duration-200 ${
+                        isOpen ? "bg-[#2E3192] text-white" : "text-[#20243A] hover:bg-[#F4F7FC]"
+                      }`}
+                    >
+                      <span className="pr-3">{f.q}</span>
+                      {isOpen ? <ChevronUp className="w-4 h-4 shrink-0" /> : <ChevronDown className="w-4 h-4 shrink-0 text-[#0071BC]" />}
+                    </button>
+                    <div
+                      className={`grid transition-[grid-template-rows,opacity] duration-200 ease-out ${
+                        isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                      }`}
+                    >
+                      <div className="overflow-hidden">
+                        <div className="p-4 sm:p-5 text-xs sm:text-sm text-[#64748B] leading-relaxed border-t border-[#E2E8F0] bg-[#F4F7FC]">
+                          {f.a}
+                        </div>
+                      </div>
                     </div>
-                  )}
-                </div>
-              ))}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* ─── 10. ADMISSIONS COUNSELLING CTA STRIP ─── */}
       <section className="py-12 sm:py-14 bg-gradient-to-r from-[#2E3192] to-[#0071BC]">

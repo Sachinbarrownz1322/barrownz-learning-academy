@@ -168,9 +168,10 @@ export default function Header() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      setScrolled(window.scrollY > 80);
     };
-    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -186,11 +187,9 @@ export default function Header() {
   }, [pathname]);
 
   return (
-    <header className="w-full sticky top-0 z-50 bg-white">
-      {/* 1. TOP UTILITY BAR */}
-      <div className={`bg-[#20243A] text-slate-300 text-xs sm:text-[13px] font-medium transition-all duration-300 overflow-hidden ${
-        scrolled ? "max-h-0 opacity-0 py-0 border-none pointer-events-none" : "max-h-24 opacity-100 py-2 border-b border-slate-800/80"
-      }`}>
+    <>
+      {/* 1. TOP UTILITY BAR (scrolls naturally with page to avoid sticky-header jitter) */}
+      <div className="bg-[#20243A] text-slate-300 text-xs sm:text-[13px] font-medium py-2 border-b border-slate-800/80">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-2">
           {/* Contact Details */}
           <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 sm:gap-6">
@@ -296,9 +295,7 @@ export default function Header() {
       </div>
 
       {/* 2. NOTICE BAR */}
-      <div className={`marquee-container transition-all duration-300 overflow-hidden ${
-        scrolled ? "max-h-0 opacity-0 py-0 pointer-events-none" : "max-h-16 opacity-100 py-1.5"
-      }`}>
+      <div className="marquee-container py-1.5">
         <div className="marquee-content text-xs sm:text-sm font-medium">
           {[0, 1].map((dupIdx) => (
             <div key={dupIdx} className="flex items-center gap-3 pr-10 shrink-0" aria-hidden={dupIdx === 1}>
@@ -324,8 +321,8 @@ export default function Header() {
       </div>
 
       {/* 3. MAIN NAVBAR (STICKY & ELEVATED) */}
-      <nav className={`w-full bg-white/95 backdrop-blur-md transition-all duration-300 ${
-        scrolled ? "shadow-md py-1 border-b border-[#E5EAF2]" : "shadow-xs py-1.5 border-b border-slate-100"
+      <nav className={`w-full sticky top-0 z-50 bg-white/95 backdrop-blur-md transition-shadow duration-200 py-1.5 ${
+        scrolled ? "shadow-md border-b border-[#E5EAF2]" : "shadow-xs border-b border-slate-100"
       }`}>
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center gap-2 xl:gap-4 h-16 sm:h-20">
@@ -910,6 +907,6 @@ export default function Header() {
           </div>
         )}
       </nav>
-    </header>
+    </>
   );
 }

@@ -2,7 +2,9 @@
 
 import React, { useEffect } from "react";
 import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
+import { fadeIn, modalTransition } from "@/components/motion/variants";
 
 export default function GalleryLightbox({ items, selectedIndex, onClose, onSelectIndex }) {
   const isOpen = selectedIndex !== null && selectedIndex >= 0 && selectedIndex < items.length;
@@ -19,8 +21,6 @@ export default function GalleryLightbox({ items, selectedIndex, onClose, onSelec
     return () => window.removeEventListener("keydown", handleKey);
   }, [isOpen, selectedIndex, items.length, onClose, onSelectIndex]);
 
-  if (!current) return null;
-
   const handlePrev = (e) => {
     e.stopPropagation();
     onSelectIndex((selectedIndex - 1 + items.length) % items.length);
@@ -32,14 +32,26 @@ export default function GalleryLightbox({ items, selectedIndex, onClose, onSelec
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4"
-      onClick={onClose}
-    >
-      <div
-        className="relative bg-white rounded-2xl max-w-4xl w-full overflow-hidden shadow-2xl border border-[#E2E8F0]"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <AnimatePresence>
+      {current && (
+        <motion.div
+          key="lightbox-backdrop"
+          variants={fadeIn}
+          initial="hidden"
+          animate="visible"
+          exit="hidden"
+          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={onClose}
+        >
+          <motion.div
+            key="lightbox-modal"
+            variants={modalTransition}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            className="relative bg-white rounded-2xl max-w-4xl w-full overflow-hidden shadow-2xl border border-[#E2E8F0]"
+            onClick={(e) => e.stopPropagation()}
+          >
         <button
           onClick={onClose}
           className="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-black/65 hover:bg-black text-white flex items-center justify-center transition"
@@ -101,7 +113,9 @@ export default function GalleryLightbox({ items, selectedIndex, onClose, onSelec
             {selectedIndex + 1} / {items.length}
           </span>
         </div>
-      </div>
-    </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

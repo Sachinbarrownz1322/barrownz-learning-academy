@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import FloatingActionButtons from "@/components/FloatingActionButtons";
+import MotionProvider from "@/components/motion/MotionProvider";
 
 const ibmPlexSerif = IBM_Plex_Serif({
   subsets: ["latin"],
@@ -28,10 +29,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={ibmPlexSerif.variable}>
       <body className="flex flex-col min-h-screen antialiased bg-white text-[#20243A] font-serif">
-        <Header />
-        <main className="flex-grow">{children}</main>
-        <Footer />
-        <FloatingActionButtons />
+        <MotionProvider>
+          <Header />
+          <main className="flex-grow">{children}</main>
+          <Footer />
+          <FloatingActionButtons />
+        </MotionProvider>
       </body>
     </html>
   );

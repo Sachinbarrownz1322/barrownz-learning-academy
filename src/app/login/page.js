@@ -1,12 +1,17 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Lock, Mail, LogIn, ShieldCheck, AlertCircle, ArrowRight, GraduationCap, CheckCircle2 } from "lucide-react";
 import { apiRequest, PANELS_BASE_URL } from "@/lib/api";
+import BrandLoader from "@/components/BrandLoader";
+import { motion, AnimatePresence } from "framer-motion";
+import { modalTransition } from "@/components/motion/variants";
 
-export default function LoginPage() {
-  const [mode, setMode] = useState("student");
+function LoginContent() {
+  const searchParams = useSearchParams();
+  const mode = searchParams.get("mode") === "portal" ? "portal" : "student";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -14,12 +19,8 @@ export default function LoginPage() {
   const [successPopup, setSuccessPopup] = useState(null);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      const qMode = params.get("mode");
-      setMode(qMode === "portal" ? "portal" : "student");
-    }
-  }, []);
+    setError("");
+  }, [mode]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -143,21 +144,58 @@ export default function LoginPage() {
         )}
       </div>
 
-      {/* SweetAlert-style Login Success Popup */}
-      {successPopup && (
-        <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-sm w-full p-7 text-center space-y-3 shadow-2xl border border-[#E2E8F0]">
-            <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto border border-emerald-100">
-              <CheckCircle2 className="w-9 h-9" />
-            </div>
-            <h2 className="text-xl font-extrabold text-[#2E3192]">Login Successful!</h2>
-            <p className="text-xs text-[#64748B]">
-              Welcome back, <strong>{successPopup.name}</strong>. Redirecting to your portal...
-            </p>
-            <div className="w-6 h-6 border-2 border-[#0071BC] border-t-transparent rounded-full animate-spin mx-auto mt-2" />
-          </div>
-        </div>
-      )}
+      {/* Premium Login Success Popup */}
+      <AnimatePresence>
+        {successPopup && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4"
+          >
+            <motion.div
+              variants={modalTransition}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="bg-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl border border-[#E2E8F0] text-center"
+            >
+              <div className="bg-gradient-to-r from-[#2E3192] to-[#0071BC] px-6 py-5 text-white">
+                <div className="w-14 h-14 rounded-2xl bg-white/15 backdrop-blur flex items-center justify-center mx-auto mb-2 border border-white/25">
+                  <CheckCircle2 className="w-8 h-8 text-emerald-300" />
+                </div>
+                <h2 className="text-lg font-extrabold tracking-wide">Login Successful!</h2>
+                <span className="inline-block mt-1 px-2.5 py-0.5 rounded-full bg-white/20 text-[10px] font-bold uppercase tracking-wider">
+                  {successPopup.role === "SUPER_ADMIN" ? "Super Admin" : successPopup.role}
+                </span>
+              </div>
+              <div className="p-6 space-y-3">
+                <p className="text-xs sm:text-sm text-[#20243A]">
+                  Welcome back, <strong className="text-[#2E3192]">{successPopup.name}</strong>!
+                </p>
+                <p className="text-[11px] text-[#64748B]">Redirecting you to your workspace...</p>
+                <div className="pt-1 flex justify-center">
+                  <BrandLoader size="sm" label="" />
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-[80vh] bg-[#F4F7FC] flex items-center justify-center px-4 py-12">
+          <BrandLoader size="md" label="Loading..." />
+        </div>
+      }
+    >
+      <LoginContent />
+    </Suspense>
   );
 }
